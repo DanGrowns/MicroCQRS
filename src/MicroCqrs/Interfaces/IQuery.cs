@@ -1,6 +1,6 @@
 namespace MicroCqrs.Interfaces
 {
-    // The type parameter is used for compile time checking against the QueryHandler,
+    // The type parameter is used for design time checking against the QueryHandler,
     // to ensure they are both returning the same type.
     
     // ReSharper disable once UnusedTypeParameter
