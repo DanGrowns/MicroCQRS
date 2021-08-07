@@ -4,6 +4,7 @@
         <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
         <Version>1.0.0</Version>
         <Authors>Dan Growns</Authors>
+        <PackageLicenseFile>Licence.txt</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="10.3.0" />
+      <None Include="Licence.txt" Pack="true" PackagePath="Licence.txt"/>
     </ItemGroup>
 
 </Project>
