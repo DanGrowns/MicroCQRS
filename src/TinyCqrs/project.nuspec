@@ -7,6 +7,7 @@
         <id>TinyCqrs</id>
         <title>TinyCqrs</title>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <projectUrl>https://github.com/DanGrowns/TinyCqrs</projectUrl>
         <description>A simple CQRS implementation for managing code in truly singularly responsible chunks.</description>
         <dependencies>
             <group targetFramework=".NET5.0">

@@ -8,7 +8,7 @@ CQRS stands for Command, Query Responsibility Segregation. The primary principle
 
 It is often described alongside [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) but CQRS can still be used to reduce the complexity of CRUD apps and make it easier to aim towards the [single responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle).
 
-> The sample project provides an example of how everything described below can be used in a CRUD application.
+> A sample application will be created to help describe these concepts but it is not available yet.
 
 ## Conventions
 
