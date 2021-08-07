@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <version>1.0.0</version>
+        <authors>Dan Growns</authors>
+        <owners>Dan Growns</owners>
+        <id>MicroCqrs</id>
+        <title>MicroCqrs</title>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A simple CQRS implementation for managing code in truly singularly responsible chunks.</description>
+        <dependencies>
+            <group targetFramework=".NET5.0">
+                <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
+            </group>
+
+            <group targetFramework=".netstandard2.1">
+                <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Debug\net5.0\*.dll" target="lib\net5.0" />
+        <file src="bin\Debug\net5.0\*.pdb" target="lib\net5.0" />
+    </files>
+</package>
