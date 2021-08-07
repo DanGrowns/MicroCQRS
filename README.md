@@ -1,4 +1,4 @@
-# MicroCQRS
+# TinyCqrs
 A small CQRS Library based on the [CQRS In Practice](https://www.pluralsight.com/courses/cqrs-in-practice) course by Vladimir Khorikov. Some of the code in this library was extended directly from Vladimir's examples in the course.
 
 
@@ -61,6 +61,6 @@ When set as the base class for a command handler which is to act as a decorator,
 
 When set as the base class for a command handler which exists by itself, (or, is the final in the chain) will wrap the execution in a try catch block and add the exception (if reached) to the ICmdResult.
 
-## MicroCqrs.FluentValidation
+## TinyCqrs.FluentValidation
 
 If you use FluentValidation, this provides the extension method **ThisOrNext(ValidationResult, TCmd)** which behaves the same as **NextOnSuccessDecorator**, except it is a more succinct expression.
