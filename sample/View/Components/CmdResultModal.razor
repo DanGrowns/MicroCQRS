@@ -1,0 +1,83 @@
+﻿
+@using System.Timers
+@using TinyCqrs.Interfaces
+@using View.Interfaces
+
+@inject IModalLauncher _modalLauncher
+@inject IJSRuntime _jsRuntime
+
+<div class="modal fade" id="cmdResultModal" tabindex="-1" aria-labelledby="cmdResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cmdResultModalLabel">@Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (ShowBody)
+            {
+                <div class="modal-body">
+                    <ul>
+                    @foreach (var message in Messages)
+                    {
+                        <li>@message</li>
+                    }
+                    </ul>
+                </div>
+            }
+            <div class="modal-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string Title { get; set; }
+    private List<string> Messages { get; set; }
+    private bool ShowBody { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _modalLauncher.Display = DisplayModal;
+        Messages = new List<string>();
+    }
+
+    private void DisplayModal(ICmdResult cmdResult)
+    {
+        if (cmdResult.IsSuccessful())
+        {
+            Title = "Save successful";
+            ShowBody = false;
+            
+            ToggleModal();
+
+            var timer = new Timer(2000);
+            timer.Elapsed += TimerOnElapsed;
+            timer.Start();
+        }
+        else
+        {
+            Title = "Action failed";
+            ShowBody = true;
+
+            Messages.Clear();
+            Messages.AddRange(
+                cmdResult.Errors.Select(x => x.ErrorMessage).ToList());
+            
+            ToggleModal();
+        }
+
+        StateHasChanged();
+    }
+
+    private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+    {
+        ToggleModal();
+        
+        var timer = (Timer) sender;
+        timer.Stop();
+    }
+
+    private void ToggleModal()
+        => _jsRuntime.InvokeVoidAsync("toggleCmdResultModal", null!);
+}

@@ -1,0 +1,136 @@
+@page "/post"
+@page "/post/{Id:int}"
+@using Servicing.Queries
+@using TinyCqrs.Interfaces
+@using Domain.Models
+@using Domain.Models.Read
+@using View.Interfaces
+
+@inject NavigationManager _navigationManager
+@inject IQueryHandlerAsync<IdQry, PostDisplay> _postQryHandler
+@inject ICmdHandlerAsync<PostDisplay> _savePostCmdHandler
+@inject IModalLauncher _modalLauncher
+
+<h1>Post</h1>
+
+@if (Model != null)
+{
+    <button type="button" class="btn btn-primary" @onclick="@Save"  style="margin-right: 25px;">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="@ReturnToList">Return to list</button>
+
+    <hr />
+
+    <div class="row">
+        <div class="col">
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>@nameof(Post.Title)</label>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" @bind="@Model.Post.Title"/>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>@nameof(Post.Content)</label>
+                </div>
+                <div class="col">
+                    <textarea type="text" class="form-control" @bind="@Model.Post.Content"></textarea>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>Blog</label>
+                </div>
+                <div class="col">
+                    <select class="form-select" @bind="@Model.Blog.Id">
+                        @foreach (var blog in Model.AvailableBlogs)
+                        {
+                            <option value="@blog.Id">@blog.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <label>Authors</label>
+                </div>
+                <div class="card-body">
+                    <select class="form-select" @onchange="SelectChanged">
+                        @foreach (var author in Model.AvailableAuthors)
+                        {
+                            <option value="@author.Id">@author.Forename @author.Surname</option>
+                        }
+                    </select>
+                    <button class="btn btn-primary" @onclick="AddAuthor">Add</button>
+                    <hr/>
+                    
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <th>Forename</th>
+                        <th>Surname</th>
+                        <th></th>
+                        </thead>
+                        <tbody>
+                        @foreach (var author in Model.PostAuthors)
+                        {
+                            <tr>
+                                <td>@author.Forename</td>
+                                <td>@author.Surname</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" @onclick="@(() => RemoveAuthor(author))">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Author CurrentSelectValue { get; set; }
+    private PostDisplay Model { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => Model = await _postQryHandler.Get(new IdQry(Id));
+    
+    private void ReturnToList()
+        => _navigationManager.NavigateTo("/posts");
+    
+    private async Task Save()
+    {
+        var result = await _savePostCmdHandler.Execute(Model);
+        _modalLauncher.Display(result);
+    }
+
+    private void SelectChanged(ChangeEventArgs e)
+    {
+        var author = Model.AvailableAuthors.FirstOrDefault(x => x.Id == Convert.ToInt32(e.Value));
+        CurrentSelectValue = author;
+    }
+
+    private void AddAuthor()
+    {
+        CurrentSelectValue ??= Model.AvailableAuthors[0];
+        
+        var existingAuthor = Model.PostAuthors.FirstOrDefault(x => x.Id == CurrentSelectValue.Id);
+        if (existingAuthor != null)
+            return;
+            
+        Model.PostAuthors.Add(CurrentSelectValue);
+        StateHasChanged();
+    }
+
+    private void RemoveAuthor(Author author)
+        => Model.PostAuthors.Remove(author);
+}

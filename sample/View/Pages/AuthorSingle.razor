@@ -1,0 +1,85 @@
+@page "/author"
+@page "/author/{Id:int}"
+@using Servicing.Queries
+@using TinyCqrs.Interfaces
+@using Domain.Models
+@using Domain.Models.Read
+@using View.Interfaces
+
+@inject NavigationManager _navigationManager
+@inject IQueryHandlerAsync<IdQry, AuthorDisplay> _authorQryHandler
+@inject ICmdHandlerAsync<Author> _saveAuthorCmdHandler
+@inject IModalLauncher _modalLauncher
+
+<h1>Author</h1>
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" @onclick="@Save"  style="margin-right: 25px;">Save</button>
+            <button type="button" class="btn btn-secondary" @onclick="@ReturnToList">Return to list</button>
+
+            <hr />
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>@nameof(Author.Forename)</label>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" @bind="@Model.Author.Forename"/>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>@nameof(Author.Surname)</label>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" @bind="@Model.Author.Surname"/>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <label>Authored posts</label>
+                </div>
+                <div class="card-body">
+                    @if (Model.Posts.Count > 0)
+                    {
+                        <ul>
+                            @foreach (var post in Model.Posts)
+                            {
+                                <li>@post.Title</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <label>No posts authored</label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private AuthorDisplay Model { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => Model = await _authorQryHandler.Get(new IdQry(Id));
+    
+    private void ReturnToList()
+        => _navigationManager.NavigateTo("/authors");
+    
+    private async Task Save()
+    {
+        var result = await _saveAuthorCmdHandler.Execute(Model.Author);
+        _modalLauncher.Display(result);
+    }
+}

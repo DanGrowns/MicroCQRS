@@ -1,0 +1,64 @@
+@page "/posts"
+@using Domain.Models.Read
+@using Servicing.Features.Posts
+@using Servicing.Queries
+@using TinyCqrs.Interfaces
+
+@inject NavigationManager _navigationManager
+@inject ICmdHandlerAsync<DeletePostCmd> _deletePostCmdHandler
+@inject IQueryHandlerAsync<EmptyQry, List<PostOverview>> _postsQryHandler
+
+<h1>Posts</h1>
+
+<button type="button" class="btn btn-primary" @onclick="@Add">Add new</button>
+
+<hr />
+
+<div class="row" style="margin-top: 10px;">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <th></th>
+        <th>Title</th>
+        <th>Author(s)</th>
+        <th></th>
+        </thead>
+        <tbody>
+        @foreach (var item in List)
+        {
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="@(() => Edit(item.Post.Id))">Edit</button>
+                </td>
+                <td>@item.Post.Title</td>
+                <td>@item.Authors</td>
+                <td>
+                    <button type="button" class="btn btn-danger" @onclick="@(() => Delete(item))">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<PostOverview> List { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => List = await _postsQryHandler.Get(new EmptyQry());
+
+    private void Add()
+        => _navigationManager.NavigateTo("/post");
+    
+    private void Edit(int id)
+        => _navigationManager.NavigateTo($"/post/{id}");
+
+    private async Task Delete(PostOverview postOverview)
+    {
+        var result = await _deletePostCmdHandler.Execute(new DeletePostCmd(postOverview));
+        if (result.IsSuccessful())
+        {
+            List.Remove(postOverview);
+            StateHasChanged();
+        }
+    }
+}

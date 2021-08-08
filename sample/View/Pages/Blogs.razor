@@ -1,0 +1,64 @@
+@page "/blogs"
+@using Domain.Models
+@using Servicing.Features.Blogs
+@using Servicing.Queries
+@using TinyCqrs.Interfaces
+
+@inject NavigationManager _navigationManager
+@inject ICmdHandlerAsync<DeleteBlogCmd> _deleteBlogCmdHandler
+@inject IQueryHandlerAsync<EmptyQry, List<Blog>> _blogsQryHandler
+
+<h1>Blogs</h1>
+
+<button type="button" class="btn btn-primary" @onclick="@Add">Add new</button>
+
+<hr />
+
+<div class="row" style="margin-top: 10px;">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <th></th>
+        <th>Id</th>
+        <th>Name</th>
+        <th></th>
+        </thead>
+        <tbody>
+        @foreach (var item in List)
+        {
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="@(() => Edit(item.Id))">Edit</button>
+                </td>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>
+                    <button type="button" class="btn btn-danger" @onclick="@(() => Delete(item))">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Blog> List { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => List = await _blogsQryHandler.Get(new EmptyQry());
+
+    private void Add()
+        => _navigationManager.NavigateTo("/blog");
+    
+    private void Edit(int id)
+        => _navigationManager.NavigateTo($"/blog/{id}");
+    
+    private async Task Delete(Blog blog)
+    {
+        var result = await _deleteBlogCmdHandler.Execute(new DeleteBlogCmd(blog));
+        if (result.IsSuccessful())
+        {
+            List.Remove(blog);
+            StateHasChanged();
+        }
+    }
+}

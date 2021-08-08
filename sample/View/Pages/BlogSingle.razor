@@ -1,0 +1,76 @@
+@page "/blog"
+@page "/blog/{Id:int}"
+@using Domain.Models
+@using Domain.Models.Read
+@using Servicing.Queries
+@using TinyCqrs.Interfaces
+@using View.Interfaces
+
+@inject NavigationManager _navigationManager
+@inject IQueryHandlerAsync<IdQry, BlogDisplay> _blogQryHandler
+@inject ICmdHandlerAsync<Blog> _saveBlogCmdHandler
+@inject IModalLauncher _modalLauncher
+
+<h1>Blog</h1>
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" @onclick="@Save"  style="margin-right: 25px;">Save</button>
+            <button type="button" class="btn btn-secondary" @onclick="@ReturnToList">Return to list</button>
+        
+            <hr />
+        
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-3 text-end">
+                    <label>@nameof(Blog.Name)</label>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" @bind="@Model.Blog.Name"/>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <label>Posts in this blog</label>
+                </div>
+                <div class="card-body">
+                    @if (Model.Posts.Count > 0)
+                    {
+                        <ul>
+                            @foreach (var post in Model.Posts)
+                            {
+                                <li>@post.Title</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <label>No posts in this blog</label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private BlogDisplay Model { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => Model = await _blogQryHandler.Get(new IdQry(Id));
+    
+    private void ReturnToList()
+        => _navigationManager.NavigateTo("/blogs");
+    
+    private async Task Save()
+    {
+        var result = await _saveBlogCmdHandler.Execute(Model.Blog);
+        _modalLauncher.Display(result);
+    }
+}
