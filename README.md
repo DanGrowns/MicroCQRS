@@ -8,11 +8,12 @@ CQRS stands for Command, Query Responsibility Segregation. The primary principle
 
 It is often described alongside [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) but CQRS can still be used to reduce the complexity of CRUD apps and make it easier to aim towards the [single responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle).
 
-> A sample application will be created to help describe these concepts but it is not available yet.
+> A sample application has been provided to explain some of these concepts, please note that it is a contrived example to explain overall concepts only.
 
 ## Conventions
 
 - It is good practice to seperate your read models from your write models. In the sample code, Entity Framework is used for writing to the system and Dapper is used for reads. Write models are stored in the Domain project, with read models in a sub folder 'Read'.
+- Where possible, place your commands or queries in the same cs file as the handler. This makes for better F12 discovery of the associated code.
 
 
 ## Setup
