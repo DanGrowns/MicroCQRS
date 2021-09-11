@@ -3,6 +3,7 @@ using System.Linq;
 using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 using FluentValidation.Results;
+using TinyCqrs.Enums;
 
 namespace TinyCqrs.FluentValidation.Classes
 {
@@ -13,12 +14,11 @@ namespace TinyCqrs.FluentValidation.Classes
             SourceName = "Validation";
             ValidationResult = validationResult;
             
-            Errors = new List<CmdIssue>();
-            Warnings = new List<CmdIssue>();
-
+            Issues = new List<CmdIssue>();
+            
             if (validationResult != null)
             {
-                Errors.AddRange(
+                Issues.AddRange(
                     ValidationResult.Errors
                         .Select(x => new CmdIssue(SourceName, x.ErrorMessage))
                         .ToList());
@@ -27,21 +27,12 @@ namespace TinyCqrs.FluentValidation.Classes
 
         public ValidationResult ValidationResult { get; }
         public string SourceName { get; }
-        public List<CmdIssue> Errors { get; }
-        public List<CmdIssue> Warnings { get; }
-
-        public void AddError(string errorMessage)
-            => Errors.Add(new CmdIssue(SourceName, errorMessage));
-
-        public void AddWarning(string errorMessage)
-            => Warnings.Add(new CmdIssue(SourceName, errorMessage));
-
-        public bool IsSuccessful(bool ignoreWarnings = true)
-        {
-            if (ignoreWarnings)
-                return Errors.Count == 0;
-
-            return Errors.Count == 0 && Warnings.Count == 0;
-        }
+        public List<CmdIssue> Issues { get; }
+        
+        public bool Success 
+            => Issues.Count == 0;
+        
+        public void AddIssue(string issueMessage, IssueType type = IssueType.Error)
+            => Issues.Add(new CmdIssue(SourceName, issueMessage, type));
     }
 }

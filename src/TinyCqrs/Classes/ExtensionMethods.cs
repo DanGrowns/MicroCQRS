@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using TinyCqrs.Interfaces;
@@ -7,30 +9,6 @@ namespace TinyCqrs.Classes
 {
     public static class ExtensionMethods
     {
-        private static T GetNewCmdResult<T>(ICmdResult current)
-            where T : ICmdResult, new()
-        {
-            var newCmdResult = new T();
-            
-            newCmdResult.Errors.AddRange(current.Errors);
-            newCmdResult.Warnings.AddRange(current.Warnings);
-
-            return newCmdResult;
-        }
-
-        /// <summary>
-        /// Cast the preceding ICmdResult to a new ICmdResult. 
-        /// Often used to morph the AggregateCmdResult into something else more specific.
-        /// </summary>
-        public static T CastTo<T>(this ICmdResult cmdResult) 
-            where T : ICmdResult, new()
-        {
-            if (cmdResult.GetType() == typeof(T))
-                return (T) cmdResult;
-            
-            return GetNewCmdResult<T>(cmdResult);
-        }
-
         // Internal overload for obtaining pipeline details in unit tests.
         internal static void ConfigureCqrsObjects(this IServiceCollection services, Assembly targetAssembly, HandlerRegistrar registrar)
         {
@@ -73,5 +51,16 @@ namespace TinyCqrs.Classes
         /// <param name="services">Microsoft DI Service Container</param>
         public static void ConfigureCqrsObjects(this IServiceCollection services)
             => ConfigureCqrsObjects(services, Assembly.GetExecutingAssembly());
+
+        public static bool HandlerPipelineEquals(this CqrsConfigurationTester tester, Type serviceType, IEnumerable<Type> expectedServices)
+        {
+            var list = expectedServices?.ToList() ?? new List<Type>();
+            var pipeline = tester.GetCqrsPipeline(serviceType);
+            
+            if (pipeline.Count != list.Count)
+                return false;
+
+            return list.Select((t, i) => pipeline[i] == t).All(typesAreEqual => typesAreEqual);
+        }
     }
 }

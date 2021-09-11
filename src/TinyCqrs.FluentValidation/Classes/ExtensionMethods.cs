@@ -12,7 +12,7 @@ namespace TinyCqrs.FluentValidation.Classes
             
             // Next should only be allowable as null for the sake of Unit testing,
             // allowing the validator decorator to be independently tested.
-            if (current.IsSuccessful() && next != null)
+            if (current.Success && next != null)
             {
                 var nextResult = next.Execute(cmd);
                 return nextResult;
@@ -28,7 +28,7 @@ namespace TinyCqrs.FluentValidation.Classes
             
             // Next should only be allowable as null for the sake of Unit testing,
             // allowing the validator decorator to be independently tested.
-            if (current.IsSuccessful() && next != null)
+            if (current.Success && next != null)
             {
                 var nextResult = await next.Execute(cmd);
                 return nextResult;

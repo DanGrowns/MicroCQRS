@@ -27,12 +27,12 @@ namespace TinyCqrs.Abstract
             }
             catch (Exception ex)
             {
-                current.AddError(ex.Message);
+                current.AddIssue(ex.Message);
             }
             
-            if (current.IsSuccessful())
+            if (current.Success)
             {
-                if (Next == null) // For Unit tests to not require the chain.
+                if (Next == null) 
                     return current;
                 
                 var nextResult = await Next.Execute(cmd);
