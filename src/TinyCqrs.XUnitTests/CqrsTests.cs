@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,8 +17,8 @@ namespace TinyCqrs.XUnitTests
 {
     public class CqrsTests
     {
-        private static int CountHandlers => 7;
-        
+        private static int CountHandlers => 12;
+
         [Fact]
         public void CmdResult_AddError_Ok()
         {
@@ -36,10 +37,8 @@ namespace TinyCqrs.XUnitTests
             basic.Success.Should().BeFalse();
         }
         
-        [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, false)]
-        public void ValidationCmdResult_AddError_Ok(bool ignoreWarnings, bool isSuccessful)
+        [Fact]
+        public void ValidationCmdResult_AddError_Ok()
         {
             const string source = "Validation";
             const string validationError = "An error occured";
@@ -49,13 +48,13 @@ namespace TinyCqrs.XUnitTests
             vcr.AddIssue("Warning message", IssueType.Warning);
 
             vcr.SourceName.Should().Be(source);
-            vcr.Issues.Count.Should().Be(2);
+            vcr.Issues.Count.Should().Be(3);
             vcr.Issues.Count(x => x.Type == IssueType.Warning).Should().Be(1);
             
             vcr.Issues[0].SourceName.Should().Be(source);
             vcr.Issues[0].Message.Should().Be(validationError);
 
-            vcr.Success.Should().Be(isSuccessful);
+            vcr.Success.Should().Be(false);
         }
 
         [Fact]
@@ -104,18 +103,6 @@ namespace TinyCqrs.XUnitTests
         [Theory]
         [InlineData(false, true)]
         [InlineData(true, false)]
-        public void CmdHandler_TryCatch_Ok(bool throwError, bool isSuccessful)
-        {
-            var cmd = new MockCoreCommand2 {ThrowError = throwError};
-            var handler = new MockCommandHandler();
-
-            var result = handler.Execute(cmd);
-            result.Success.Should().Be(isSuccessful);
-        }
-        
-        [Theory]
-        [InlineData(false, true)]
-        [InlineData(true, false)]
         public async Task CmdHandlerAsync_TryCatch_Ok(bool throwError, bool isSuccessful)
         {
             var cmd = new MockCoreCommand(throwError);
@@ -145,6 +132,29 @@ namespace TinyCqrs.XUnitTests
 
             var result = parent.Execute(new MockCoreCommand(false));
             result.SourceName.Should().Be("Core command handler");
+        }
+        
+        [Theory]
+        [InlineData(typeof(IQueryHandler<List<string>>), typeof(QueryHandler1))]
+        [InlineData(typeof(IQueryHandler<Query, List<string>>), typeof(QueryHandler2))]
+        
+        [InlineData(typeof(IQueryHandlerAsync<List<string>>), typeof(QueryHandlerAsync1))]
+        [InlineData(typeof(IQueryHandlerAsync<Query, List<string>>), typeof(QueryHandlerAsync2))]
+        
+        [InlineData(typeof(ICmdHandler<Cmd>), typeof(CmdHandler1))]
+        [InlineData(typeof(ICmdHandler<Cmd, CustomResult>), typeof(CmdHandler2))]
+        
+        [InlineData(typeof(ICmdHandlerAsync<Cmd>), typeof(CmdHandlerAsync1))]
+        [InlineData(typeof(ICmdHandlerAsync<Cmd, CustomResult>), typeof(CmdHandlerAsync2))]
+        public void HandlerRegistrar_Types_Ok(Type serviceType, Type expectedType)
+        {
+            var sc = new ServiceCollection();
+            sc.ConfigureCqrsObjects(typeof(QueryHandler1));
+            
+            var provider = sc.BuildServiceProvider();
+            var service = provider.GetService(serviceType);
+
+            service.GetType().Should().Be(expectedType);
         }
 
         [Theory]
