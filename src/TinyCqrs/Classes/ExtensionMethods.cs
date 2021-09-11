@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using TinyCqrs.Interfaces;
@@ -49,5 +51,16 @@ namespace TinyCqrs.Classes
         /// <param name="services">Microsoft DI Service Container</param>
         public static void ConfigureCqrsObjects(this IServiceCollection services)
             => ConfigureCqrsObjects(services, Assembly.GetExecutingAssembly());
+
+        public static bool HandlerPipelineEquals(this CqrsConfigurationTester tester, Type serviceType, IEnumerable<Type> expectedServices)
+        {
+            var list = expectedServices?.ToList() ?? new List<Type>();
+            var pipeline = tester.GetCqrsPipeline(serviceType);
+            
+            if (pipeline.Count != list.Count)
+                return false;
+
+            return list.Select((t, i) => pipeline[i] == t).All(typesAreEqual => typesAreEqual);
+        }
     }
 }

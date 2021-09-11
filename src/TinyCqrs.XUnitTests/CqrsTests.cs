@@ -215,8 +215,13 @@ namespace TinyCqrs.XUnitTests
         public void GetPipeline_Ok()
         {
             var tester = new CqrsConfigurationTester(typeof(DecoratorHandlerAsync));
-            var pipeline = tester.GetCqrsPipeline<ICmdHandlerAsync<MockCoreCommand>>();
-            pipeline.Count.Should().Be(2);
+            
+            tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<MockCoreCommand>), new[]
+            {
+                typeof(DecoratorHandlerAsync),
+                typeof(CoreCommandHandlerAsync)
+                
+            }).Should().BeTrue();
         }
 
         [Fact]
