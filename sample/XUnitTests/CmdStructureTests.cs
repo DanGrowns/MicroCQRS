@@ -25,58 +25,58 @@ namespace XUnitTests
         [Fact]
         public void Author_Pipeline_Ok()
         {
-            var pipeline = Tester.GetCqrsPipeline<ICmdHandlerAsync<Author>>();
-            
-            pipeline.Count.Should().Be(2);
-            pipeline[0].Should().Be<ValidateAuthor>();
-            pipeline[1].Should().Be<SaveAuthor>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<Author>), new[]
+            {
+                typeof(ValidateAuthor),
+                typeof(SaveAuthor)
+            });
         }
         
         [Fact]
         public void Blog_Pipeline_Ok()
         {
-            var pipeline = Tester.GetCqrsPipeline<ICmdHandlerAsync<Blog>>();
-            
-            pipeline.Count.Should().Be(2);
-            pipeline[0].Should().Be<ValidateBlog>();
-            pipeline[1].Should().Be<SaveBlog>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<Blog>), new[]
+            {
+                typeof(ValidateBlog),
+                typeof(SaveBlog)
+            });
         }
         
         [Fact]
         public void Post_Pipeline_Ok()
         {
-            var pipeline = Tester.GetCqrsPipeline<ICmdHandlerAsync<PostDisplay>>();
-            
-            pipeline.Count.Should().Be(2);
-            pipeline[0].Should().Be<ValidatePost>();
-            pipeline[1].Should().Be<SavePost>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<PostDisplay>), new[]
+            {
+                typeof(ValidatePost),
+                typeof(SavePost)
+            });
         }
         
         [Fact]
         public void DeleteAuthor_Single_Ok()
         {
-            var handler = Tester.GetCqrsPipeline<ICmdHandlerAsync<DeleteAuthorCmd>>();
-            
-            handler.Count.Should().Be(1);
-            handler[0].Should().Be<DeleteAuthor>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<DeleteAuthorCmd>), new[]
+            {
+                typeof(DeleteAuthor)
+            });
         }
         
         [Fact]
         public void DeleteBlog_Single_Ok()
         {
-            var handler = Tester.GetCqrsPipeline<ICmdHandlerAsync<DeleteBlogCmd>>();
-            
-            handler.Count.Should().Be(1);
-            handler[0].Should().Be<DeleteBlog>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<DeleteBlogCmd>), new[]
+            {
+                typeof(DeleteBlog)
+            });
         }
         
         [Fact]
         public void DeletePost_Single_Ok()
         {
-            var handler = Tester.GetCqrsPipeline<ICmdHandlerAsync<DeletePostCmd>>();
-            
-            handler.Count.Should().Be(1);
-            handler[0].Should().Be<DeletePost>();
+            Tester.HandlerPipelineEquals(typeof(ICmdHandlerAsync<DeletePostCmd>), new[]
+            {
+                typeof(DeletePost)
+            });
         }
     }
 }

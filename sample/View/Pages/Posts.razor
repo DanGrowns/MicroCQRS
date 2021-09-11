@@ -55,7 +55,7 @@
     private async Task Delete(PostOverview postOverview)
     {
         var result = await _deletePostCmdHandler.Execute(new DeletePostCmd(postOverview));
-        if (result.IsSuccessful())
+        if (result.Success)
         {
             List.Remove(postOverview);
             StateHasChanged();

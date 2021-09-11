@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,11 +33,14 @@ namespace Servicing.Features.Authors
 
                 sql.Append(" SELECT p.* ");
                 sql.Append(" FROM Posts p ");
-                sql.Append(" INNER JOIN Authors a ");
-                sql.Append(" ON p.AuthorId = a.Id ");
+                sql.Append(" LEFT JOIN PostAuthors pa ");
+                sql.Append(" ON p.Id = pa.PostId ");
+                sql.Append(" LEFT JOIN Authors a ");
+                sql.Append(" ON pa.AuthorId = a.Id ");
+                sql.Append($" WHERE AuthorId = {query.Id}; ");
                 
                 var reader = await connection.QueryMultipleAsync(sql.ToString());
-                
+
                 var author = reader.Read<Author>().FirstOrDefault();
                 var posts = reader.Read<Post>().ToList();
                 

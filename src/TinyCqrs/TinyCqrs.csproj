@@ -2,12 +2,22 @@
 
     <PropertyGroup>
         <LangVersion>9</LangVersion>
-        <Version>1.0.0</Version>
+        <Version>2.0.0</Version>
         <Authors>Dan Growns</Authors>
         <PackageId>TinyCqrs</PackageId>
         <PackageLicenseFile>Licence.txt</PackageLicenseFile>
         <PackageVersion>2.0.0</PackageVersion>
         <TargetFramework>net5.0</TargetFramework>
+        <PackageProjectUrl>https://github.com/DanGrowns/TinyCqrs</PackageProjectUrl>
+        <PackageReleaseNotes>2.0.0
+- Breaking change: ICmdResult has merged Errors and Warnings collections into Issues with an IssueType enum.
+- Breaking change: ICmdResult has changed IsSuccessful() to Success property for serialization
+- Command handler interfaces now also support custom return type where the return type is based on ICmdResult
+- Extension method HandlerPipelineEquals() added to express unit test expectation for decorator pipeline in a more succinct manner.
+- Handler registrar updated to allow multiple handler contracts on a single concrete class</PackageReleaseNotes>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+        <FileVersion>2.0.0.0</FileVersion>
+        <Description>A small CQRS Library based on the CQRS In Practice course by Vladimir Khorikov. Some of the code in this library was extended directly from Vladimir's examples in the course.</Description>
     </PropertyGroup>
 
     <ItemGroup>

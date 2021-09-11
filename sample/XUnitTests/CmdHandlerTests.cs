@@ -22,7 +22,7 @@ namespace XUnitTests
         {
             var handler = new ValidateAuthor(null);
             var result = await handler.Execute(new Author());
-            result.Errors.Count.Should().Be(2);
+            result.Issues.Count.Should().Be(2);
         }
         
         [Theory]
@@ -34,8 +34,8 @@ namespace XUnitTests
             var handler = new ValidateAuthor(null);
             var result = await handler.Execute(cmd);
             
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
+            result.Issues.Count.Should().Be(1);
+            result.Issues[0].Message.Should().Be(expectedErrorMessage);
         }
         
         [Fact]
@@ -43,8 +43,8 @@ namespace XUnitTests
         {
             var handler = new ValidateBlog(null);
             var result = await handler.Execute(new Blog());
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be("Name required");
+            result.Issues.Count.Should().Be(1);
+            result.Issues[0].Message.Should().Be("Name required");
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace XUnitTests
             
             var handler = new ValidatePost(null);
             var result = await handler.Execute(cmd);
-            result.Errors.Count.Should().Be(4);
+            result.Issues.Count.Should().Be(4);
         }
         
         [Theory]
@@ -84,8 +84,8 @@ namespace XUnitTests
             var handler = new ValidatePost(null);
             var result = await handler.Execute(cmd);
             
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
+            result.Issues.Count.Should().Be(1);
+            result.Issues[0].Message.Should().Be(expectedErrorMessage);
         }
     }
 }

@@ -1,11 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.0.0</Version>
+        <Version>2.0.0</Version>
         <Authors>Dan Growns</Authors>
         <PackageLicenseFile>Licence.txt</PackageLicenseFile>
         <TargetFramework>net5.0</TargetFramework>
         <PackageVersion>2.0.0</PackageVersion>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+        <FileVersion>2.0.0.0</FileVersion>
+        <PackageProjectUrl>https://github.com/DanGrowns/TinyCqrs</PackageProjectUrl>
+        <Description>A small CQRS Library based on the CQRS In Practice course by Vladimir Khorikov. Some of the code in this library was extended directly from Vladimir's examples in the course.</Description>
     </PropertyGroup>
 
     <ItemGroup>

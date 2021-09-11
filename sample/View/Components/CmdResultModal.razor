@@ -44,7 +44,7 @@
 
     private void DisplayModal(ICmdResult cmdResult)
     {
-        if (cmdResult.IsSuccessful())
+        if (cmdResult.Success)
         {
             Title = "Save successful";
             ShowBody = false;
@@ -62,7 +62,7 @@
 
             Messages.Clear();
             Messages.AddRange(
-                cmdResult.Errors.Select(x => x.ErrorMessage).ToList());
+                cmdResult.Issues.Select(x => x.Message).ToList());
             
             ToggleModal();
         }

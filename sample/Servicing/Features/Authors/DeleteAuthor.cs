@@ -42,7 +42,7 @@ namespace Servicing.Features.Authors
             }
             catch (Exception ex)
             {
-                cmdResult.AddError(ex.Message);
+                cmdResult.AddIssue(ex.Message);
             }
 
             return cmdResult;

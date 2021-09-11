@@ -55,7 +55,7 @@
     private async Task Delete(Blog blog)
     {
         var result = await _deleteBlogCmdHandler.Execute(new DeleteBlogCmd(blog));
-        if (result.IsSuccessful())
+        if (result.Success)
         {
             List.Remove(blog);
             StateHasChanged();
