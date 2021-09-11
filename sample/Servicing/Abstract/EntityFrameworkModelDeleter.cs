@@ -27,7 +27,7 @@ namespace Servicing.Abstract
                 var existingEntity = await dbSet.FirstOrDefaultAsync(x => x.Id == entity.Id);
                 if (existingEntity == null)
                 {
-                    cmdResult.AddError("The entity you are trying to delete does not exist.");
+                    cmdResult.AddIssue("The entity you are trying to delete does not exist.");
                 }
                 else
                 {
@@ -39,7 +39,7 @@ namespace Servicing.Abstract
             }
             catch (Exception ex)
             {
-                cmdResult.AddError(ex.Message);
+                cmdResult.AddIssue(ex.Message);
             }
 
             return cmdResult;
