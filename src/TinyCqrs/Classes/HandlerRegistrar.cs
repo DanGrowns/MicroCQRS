@@ -94,8 +94,15 @@ namespace TinyCqrs.Classes
             var typeDefinition = type.GetGenericTypeDefinition();
 
             return typeDefinition == typeof(ICmdHandler<>) 
+                   || typeDefinition == typeof(ICmdHandler<,>) 
+                   
                    || typeDefinition == typeof(ICmdHandlerAsync<>)
+                   || typeDefinition == typeof(ICmdHandlerAsync<,>)
+                   
+                   || typeDefinition == typeof(IQueryHandler<>)
                    || typeDefinition == typeof(IQueryHandler<,>)
+                   
+                   || typeDefinition == typeof(IQueryHandlerAsync<>)
                    || typeDefinition == typeof(IQueryHandlerAsync<,>);
         }
         
