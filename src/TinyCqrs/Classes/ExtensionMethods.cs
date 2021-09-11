@@ -7,30 +7,6 @@ namespace TinyCqrs.Classes
 {
     public static class ExtensionMethods
     {
-        private static T GetNewCmdResult<T>(ICmdResult current)
-            where T : ICmdResult, new()
-        {
-            var newCmdResult = new T();
-            
-            newCmdResult.Errors.AddRange(current.Errors);
-            newCmdResult.Warnings.AddRange(current.Warnings);
-
-            return newCmdResult;
-        }
-
-        /// <summary>
-        /// Cast the preceding ICmdResult to a new ICmdResult. 
-        /// Often used to morph the AggregateCmdResult into something else more specific.
-        /// </summary>
-        public static T CastTo<T>(this ICmdResult cmdResult) 
-            where T : ICmdResult, new()
-        {
-            if (cmdResult.GetType() == typeof(T))
-                return (T) cmdResult;
-            
-            return GetNewCmdResult<T>(cmdResult);
-        }
-
         // Internal overload for obtaining pipeline details in unit tests.
         internal static void ConfigureCqrsObjects(this IServiceCollection services, Assembly targetAssembly, HandlerRegistrar registrar)
         {

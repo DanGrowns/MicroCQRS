@@ -1,14 +1,18 @@
+using TinyCqrs.Enums;
+
 namespace TinyCqrs.Classes
 {
     public class CmdIssue
     {
-        public CmdIssue(string sourceName, string errorMessage)
+        public CmdIssue(string sourceName, string message, IssueType issueType = IssueType.Error)
         {
             SourceName = sourceName;
-            ErrorMessage = errorMessage;
+            Message = message;
+            Type = issueType;
         }
         
         public string SourceName { get; }
-        public string ErrorMessage { get; }
+        public string Message { get; }
+        public IssueType Type { get; }
     }
 }

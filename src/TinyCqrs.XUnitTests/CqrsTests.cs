@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,6 +9,7 @@ using TinyCqrs.FluentValidation.Classes;
 using TinyCqrs.Interfaces;
 using TinyCqrs.XUnitTests.Implementation;
 using Microsoft.Extensions.DependencyInjection;
+using TinyCqrs.Enums;
 using Xunit;
 
 namespace TinyCqrs.XUnitTests
@@ -16,24 +18,22 @@ namespace TinyCqrs.XUnitTests
     {
         private static int CountHandlers => 7;
         
-        [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, false)]
-        public void BasicCmdResult_AddError_Ok(bool ignoreWarnings, bool isSuccessful)
+        [Fact]
+        public void CmdResult_AddError_Ok()
         {
             const string source = "Source";
             const string message = "New error message";
             
             var basic = new CmdResult(source);
-            basic.AddError(message);
-            basic.AddWarning("New warning message");
+            basic.AddIssue(message);
+            basic.AddIssue("New warning message", IssueType.Warning);
 
             basic.SourceName.Should().Be(source);
-            basic.Errors.Count.Should().Be(1);
-            basic.Errors[0].SourceName.Should().Be(source);
-            basic.Errors[0].ErrorMessage.Should().Be(message);
+            basic.Issues.Count.Should().Be(2);
+            basic.Issues[0].SourceName.Should().Be(source);
+            basic.Issues[0].Message.Should().Be(message);
 
-            basic.IsSuccessful(ignoreWarnings).Should().Be(isSuccessful);
+            basic.Success.Should().BeFalse();
         }
         
         [Theory]
@@ -45,16 +45,17 @@ namespace TinyCqrs.XUnitTests
             const string validationError = "An error occured";
             
             var vcr = new ValidationCmdResult(new ValidationResult {Errors = { new ValidationFailure("Property", validationError)}});
-            vcr.AddError("New error message");
-            vcr.AddWarning("Warning message");
+            vcr.AddIssue("New error message");
+            vcr.AddIssue("Warning message", IssueType.Warning);
 
             vcr.SourceName.Should().Be(source);
-            vcr.Errors.Count.Should().Be(2);
-            vcr.Warnings.Count.Should().Be(1);
-            vcr.Errors[0].SourceName.Should().Be(source);
-            vcr.Errors[0].ErrorMessage.Should().Be(validationError);
+            vcr.Issues.Count.Should().Be(2);
+            vcr.Issues.Count(x => x.Type == IssueType.Warning).Should().Be(1);
+            
+            vcr.Issues[0].SourceName.Should().Be(source);
+            vcr.Issues[0].Message.Should().Be(validationError);
 
-            vcr.IsSuccessful(ignoreWarnings).Should().Be(isSuccessful);
+            vcr.Success.Should().Be(isSuccessful);
         }
 
         [Fact]
@@ -109,7 +110,7 @@ namespace TinyCqrs.XUnitTests
             var handler = new MockCommandHandler();
 
             var result = handler.Execute(cmd);
-            result.IsSuccessful().Should().Be(isSuccessful);
+            result.Success.Should().Be(isSuccessful);
         }
         
         [Theory]
@@ -121,25 +122,7 @@ namespace TinyCqrs.XUnitTests
             var handler = new CoreCommandHandlerAsync();
 
             var result = await handler.Execute(cmd);
-            result.IsSuccessful().Should().Be(isSuccessful);
-        }
-
-        [Fact]
-        public void CastCmdResult_Ok()
-        {
-            var cmd = new CmdResult("Test");
-            var output = cmd.CastTo<CustomCmdResult>();
-
-            output.Should().BeOfType<CustomCmdResult>();
-        }
-        
-        [Fact]
-        public void CastSameCmdResult_Ok()
-        {
-            var cmd = new CmdResult("Test");
-            var output = cmd.CastTo<CmdResult>();
-
-            output.Should().BeOfType<CmdResult>();
+            result.Success.Should().Be(isSuccessful);
         }
 
         [Fact]
@@ -175,7 +158,7 @@ namespace TinyCqrs.XUnitTests
             var decorator = new ThisOrNextValidator(handler);
 
             var result = decorator.Execute(data);
-            result.IsSuccessful().Should().Be(isSuccessful);
+            result.Success.Should().Be(isSuccessful);
         }
         
         [Theory]
@@ -189,7 +172,7 @@ namespace TinyCqrs.XUnitTests
             var decorator = new ThisOrNextValidatorAsync(handler);
 
             var result = await decorator.Execute(data);
-            result.IsSuccessful().Should().Be(isSuccessful);
+            result.Success.Should().Be(isSuccessful);
         }
 
         [Theory]
@@ -202,7 +185,7 @@ namespace TinyCqrs.XUnitTests
             var decorator = new DecoratorHandlerAsync(handler);
 
             var result = await decorator.Execute(data);
-            result.IsSuccessful().Should().Be(isSuccessful);
+            result.Success.Should().Be(isSuccessful);
         }
         
         [Theory]
@@ -215,7 +198,7 @@ namespace TinyCqrs.XUnitTests
             var decorator = new DecoratorHandler(handler);
 
             var result = decorator.Execute(data);
-            result.IsSuccessful().Should().Be(isSuccessful);
+            result.Success.Should().Be(isSuccessful);
         }
 
         [Fact]

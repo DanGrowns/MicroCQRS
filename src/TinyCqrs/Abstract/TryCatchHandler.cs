@@ -22,7 +22,7 @@ namespace TinyCqrs.Abstract
             }
             catch (Exception ex)
             {
-                current.AddError(ex.Message);
+                current.AddIssue(ex.Message);
             }
 
             return current;

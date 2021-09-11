@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="10.3.0" />
-      <None Include="Licence.txt" Pack="true" PackagePath="Licence.txt"/>
+      <PackageReference Include="FluentValidation" Version="10.3.3" />
+      <None Include="Licence.txt" Pack="true" PackagePath="Licence.txt" />
     </ItemGroup>
 
 </Project>

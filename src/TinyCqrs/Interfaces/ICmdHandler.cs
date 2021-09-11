@@ -1,7 +1,13 @@
 namespace TinyCqrs.Interfaces
 {
-    public interface ICmdHandler<TCommand>
+    public interface ICmdHandler<in TCmd>
     {
-        ICmdResult Execute(TCommand cmd);
+        ICmdResult Execute(TCmd cmd);
+    }
+    
+    public interface ICmdHandler<in TCmd, out TCmdResult>
+        where TCmdResult : ICmdResult
+    {
+        TCmdResult Execute(TCmd cmd);
     }
 }
