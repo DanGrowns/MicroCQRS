@@ -17,7 +17,7 @@ namespace TinyCqrs.XUnitTests
 {
     public class CqrsTests
     {
-        private static int CountHandlers => 12;
+        private static int CountHandlers => 14;
 
         [Fact]
         public void CmdResult_AddError_Ok()

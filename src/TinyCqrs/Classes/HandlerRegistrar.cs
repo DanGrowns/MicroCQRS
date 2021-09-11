@@ -127,22 +127,29 @@ namespace TinyCqrs.Classes
                 .Reverse()
                 .ToList();
 
-            var interfaceType = type.GetInterfaces().Single(IsHandlerInterface);
-            var factory = BuildPipeline(pipeline, interfaceType);
+            foreach (var interfaceType in type.GetInterfaces())
+            {
+                var isHandler = IsHandlerInterface(interfaceType);
+                if (isHandler == false)
+                    continue;
+                
+                var factory = BuildPipeline(pipeline, interfaceType);
 
-            services.AddTransient(interfaceType, factory);
-
-            //
-            // Used to expose the list of CqrsDecorators and the core handler for the sake of unit tests
-            //
-            var countEmptyConstructors = LastConstructorInfo.Count(x => x.GetParameters().Length == 0);
-            if (countEmptyConstructors > 1)
-                throw new ArgumentException("More than one handler in the pipeline contains an empty constructor.", interfaceType.FullName);
+                services.AddTransient(interfaceType, factory);
+                
+                //
+                // Used to expose the list of CqrsDecorators and the core handler for the sake of unit tests
+                //
+                var countEmptyConstructors = LastConstructorInfo.Count(x => x.GetParameters().Length == 0);
+                if (countEmptyConstructors > 1)
+                    throw new ArgumentException("More than one handler in the pipeline contains an empty constructor.", interfaceType.FullName);
             
-            var registrationPipeline = pipeline.ToList();
-            registrationPipeline.Reverse();
+                var registrationPipeline = pipeline.ToList();
+                registrationPipeline.Reverse();
             
-            PipelineRegistrations.Add(new CqrsPipeline(interfaceType, registrationPipeline));
+                PipelineRegistrations.Add(new CqrsPipeline(interfaceType, registrationPipeline));
+                
+            }
         }
     }
 }
