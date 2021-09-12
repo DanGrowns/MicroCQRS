@@ -1,9 +1,11 @@
+using System.Text.Json.Serialization;
 using TinyCqrs.Enums;
 
 namespace TinyCqrs.Classes
 {
     public class CmdIssue
     {
+        [JsonConstructor]
         public CmdIssue(string sourceName, string message, IssueType issueType = IssueType.Error)
         {
             SourceName = sourceName;
