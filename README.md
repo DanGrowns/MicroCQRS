@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.1
+- Added [JsonConstructor] attribute to CmdIssue for Json.Net deserialization
+
 ## 2.0.0
 - **Breaking change:** ICmdResult has merged Errors and Warnings collections into Issues with an IssueType enum.
 - **Breaking change:** ICmdResult has changed IsSuccessful() to Success property for serialization
