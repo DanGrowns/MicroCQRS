@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+- Added [JsonConstructor] attribute to CmdResult for Json.Net 
+- Fixed naming bug with CmdIssue's [JsonConstructor]
+
 ## 2.0.1
 - Added [JsonConstructor] attribute to CmdIssue for Json.Net deserialization
 
