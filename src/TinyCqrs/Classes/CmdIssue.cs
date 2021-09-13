@@ -6,11 +6,11 @@ namespace TinyCqrs.Classes
     public class CmdIssue
     {
         [JsonConstructor]
-        public CmdIssue(string sourceName, string message, IssueType issueType = IssueType.Error)
+        public CmdIssue(string sourceName, string message, IssueType type = IssueType.Error)
         {
             SourceName = sourceName;
             Message = message;
-            Type = issueType;
+            Type = type;
         }
         
         public string SourceName { get; }
