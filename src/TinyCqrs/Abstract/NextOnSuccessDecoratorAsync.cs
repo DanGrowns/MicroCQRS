@@ -9,7 +9,7 @@ namespace TinyCqrs.Abstract
     public abstract class NextOnSuccessDecoratorAsync<TCmd> : ICmdHandlerAsync<TCmd>
     {
         private ICmdHandlerAsync<TCmd> Next { get; }
-        protected abstract ICmdResult CmdResult { get; }
+        protected abstract ICmdResult CmdResult { get; set; }
 
         protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd> next)
             => Next = next;

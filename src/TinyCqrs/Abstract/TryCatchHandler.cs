@@ -7,7 +7,7 @@ namespace TinyCqrs.Abstract
     [CqrsIgnore]
     public abstract class TryCatchHandler<TCmd> : ICmdHandler<TCmd>
     {
-        protected abstract ICmdResult CmdResult { get; }
+        protected abstract ICmdResult CmdResult { get; set; }
 
         // ReSharper disable once UnusedParameter.Global
         protected abstract void ExecuteBody(TCmd cmd);

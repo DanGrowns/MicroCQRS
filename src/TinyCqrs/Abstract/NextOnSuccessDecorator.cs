@@ -8,7 +8,7 @@ namespace TinyCqrs.Abstract
     public abstract class NextOnSuccessDecorator<TCmd> : ICmdHandler<TCmd>
     {
         private ICmdHandler<TCmd> Next { get; }
-        protected abstract ICmdResult CmdResult { get; }
+        protected abstract ICmdResult CmdResult { get; set; }
 
         protected NextOnSuccessDecorator(ICmdHandler<TCmd> next)
             => Next = next;
