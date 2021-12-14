@@ -8,13 +8,10 @@ namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
     public abstract class NextOnSuccessDecoratorAsync<TCmd> : 
-        NextOnSuccessDecoratorAsync<TCmd, CmdResult>, ICmdHandlerAsync<TCmd>
+        NextOnSuccessDecoratorAsync<TCmd, CmdResult>
     {
-        protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd> next) 
-            : base((ICmdHandlerAsync<TCmd, CmdResult>) next) { }
-
-        public new async Task<ICmdResult> Execute(TCmd cmd)
-            => await base.Execute(cmd);
+        protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd, CmdResult> next) 
+            : base(next) { }
     }
     
     [CqrsIgnore]
@@ -26,8 +23,7 @@ namespace TinyCqrs.Abstract
 
         protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd, TResult> next)
             => Next = next;
-        
-        // ReSharper disable once UnusedParameter.Global
+
         protected abstract Task ExecuteBody(TCmd cmd);
         
         private async Task<TResult> TryCatchNext(TCmd cmd)

@@ -7,13 +7,10 @@ namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
     public abstract class NextOnSuccessDecorator<TCmd> : 
-        NextOnSuccessDecorator<TCmd, CmdResult>, ICmdHandler<TCmd>
+        NextOnSuccessDecorator<TCmd, CmdResult>
     {
-        protected NextOnSuccessDecorator(ICmdHandler<TCmd> next) 
-            : base((ICmdHandler<TCmd, CmdResult>) next) { }
-
-        public new ICmdResult Execute(TCmd cmd)
-            => base.Execute(cmd);
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd, CmdResult> next) 
+            : base(next) { }
     }
     
     [CqrsIgnore]

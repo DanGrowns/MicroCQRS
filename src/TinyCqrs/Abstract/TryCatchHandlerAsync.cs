@@ -1,19 +1,23 @@
 using System;
 using System.Threading.Tasks;
 using TinyCqrs.Attributes;
+using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class TryCatchHandlerAsync<TCmd> : ICmdHandlerAsync<TCmd>
+    public abstract class TryCatchHandlerAsync<TCmd> : 
+        TryCatchHandlerAsync<TCmd, CmdResult> { }
+    
+    [CqrsIgnore]
+    public abstract class TryCatchHandlerAsync<TCmd, TResult> : ICmdHandlerAsync<TCmd, TResult>
+        where TResult : ICmdResult, new()
     {
-        protected abstract ICmdResult CmdResult { get; set; }
-
-        // ReSharper disable once UnusedParameter.Global
+        protected abstract TResult CmdResult { get; set; }
         protected abstract Task ExecuteBody(TCmd cmd);
 
-        private async Task<ICmdResult> TryCatchNext(TCmd cmd)
+        private async Task<TResult> TryCatchNext(TCmd cmd)
         {
             var current = CmdResult;
             
@@ -29,7 +33,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public async Task<ICmdResult> Execute(TCmd cmd)
+        public async Task<TResult> Execute(TCmd cmd)
             => await TryCatchNext(cmd);
     }
 }
