@@ -1,24 +1,36 @@
 using System;
 using TinyCqrs.Attributes;
+using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class NextOnSuccessDecorator<TCmd> : ICmdHandler<TCmd>
+    public abstract class NextOnSuccessDecorator<TCmd> : 
+        NextOnSuccessDecorator<TCmd, CmdResult>, ICmdHandler<TCmd>
     {
-        private ICmdHandler<TCmd> Next { get; }
-        protected abstract ICmdResult CmdResult { get; set; }
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd> next) 
+            : base((ICmdHandler<TCmd, CmdResult>) next) { }
 
-        protected NextOnSuccessDecorator(ICmdHandler<TCmd> next)
+        public new ICmdResult Execute(TCmd cmd)
+            => base.Execute(cmd);
+    }
+    
+    [CqrsIgnore]
+    public abstract class NextOnSuccessDecorator<TCmd, TResult> : ICmdHandler<TCmd, TResult>
+        where TResult : ICmdResult, new()
+    {
+        private ICmdHandler<TCmd, TResult> Next { get; }
+        protected TResult CmdResult { get; set; }
+
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd, TResult> next)
             => Next = next;
         
-        // ReSharper disable once UnusedParameter.Global
         protected abstract void ExecuteBody(TCmd cmd);
-
-        private ICmdResult TryCatchNext(TCmd cmd)
+        
+        private TResult TryCatchNext(TCmd cmd)
         {
-            var current = CmdResult;
+            var current = CmdResult ?? new TResult();
             
             try
             {
@@ -41,7 +53,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public ICmdResult Execute(TCmd cmd)
+        public TResult Execute(TCmd cmd)
             => TryCatchNext(cmd);
     }
 }
