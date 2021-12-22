@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.0
+- Breaking change: Removed support for TinyCqrs.FluentValidation which is now legacy and works only with v2 or lower
+- Breaking change: CmdHandler execute return type changed to CmdResult from ICmdResult
+- Updated abstract handlers to allow for custom return type
+- Updated abstract handlers to provide setter on CmdResult property
+
 ## 2.0.2
 - Added [JsonConstructor] attribute to CmdResult for Json.Net 
 - Fixed naming bug with CmdIssue's [JsonConstructor]

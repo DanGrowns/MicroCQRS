@@ -18,22 +18,18 @@ namespace TinyCqrs.XUnitTests.Implementation
 
         public ICmdHandler<MockCoreCommand> ChildHandler { get; }
 
-        protected override ICmdResult CmdResult { get; }
-
         protected override void ExecuteBody(MockCoreCommand cmd)
         {
             if (cmd.ThrowError)
                 throw new ArgumentException();
         }
     }
-    
+
     [CqrsDecorator]
     public class DecoratorHandlerAsync : NextOnSuccessDecoratorAsync<MockCoreCommand>
     {
         public DecoratorHandlerAsync(ICmdHandlerAsync<MockCoreCommand> next) : base(next)
             => CmdResult = new CmdResult("Decorator Handler Async");
-        
-        protected override ICmdResult CmdResult { get; }
 
         protected override Task ExecuteBody(MockCoreCommand cmd)
         {

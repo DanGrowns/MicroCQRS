@@ -1,5 +1,6 @@
 using System;
 using TinyCqrs.Attributes;
+using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 
 namespace TinyCqrs.Abstract
@@ -8,17 +9,15 @@ namespace TinyCqrs.Abstract
     public abstract class NextOnSuccessDecorator<TCmd> : ICmdHandler<TCmd>
     {
         private ICmdHandler<TCmd> Next { get; }
-        protected abstract ICmdResult CmdResult { get; }
+        protected CmdResult CmdResult { get; set; }
 
-        protected NextOnSuccessDecorator(ICmdHandler<TCmd> next)
-            => Next = next;
-        
-        // ReSharper disable once UnusedParameter.Global
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd> next) => Next = next;
+
         protected abstract void ExecuteBody(TCmd cmd);
-
-        private ICmdResult TryCatchNext(TCmd cmd)
+        
+        private CmdResult TryCatchNext(TCmd cmd)
         {
-            var current = CmdResult;
+            var current = CmdResult ?? new CmdResult();
             
             try
             {
@@ -41,7 +40,47 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public ICmdResult Execute(TCmd cmd)
+        public CmdResult Execute(TCmd cmd)
+            => TryCatchNext(cmd);
+    }
+    
+    [CqrsIgnore]
+    public abstract class NextOnSuccessDecorator<TCmd, TResult> : ICmdHandler<TCmd, TResult>
+        where TResult : ICmdResult, new()
+    {
+        private ICmdHandler<TCmd, TResult> Next { get; }
+        protected TResult CmdResult { get; set; }
+        
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd, TResult> next) => Next = next;
+        
+        protected abstract void ExecuteBody(TCmd cmd);
+        
+        private TResult TryCatchNext(TCmd cmd)
+        {
+            var current = CmdResult ?? new TResult();
+            
+            try
+            {
+                ExecuteBody(cmd);
+            }
+            catch (Exception ex)
+            {
+                current.AddIssue(ex.Message);
+            }
+            
+            if (current.Success)
+            {
+                if (Next == null)
+                    return current;
+                
+                var nextResult = Next.Execute(cmd);
+                return nextResult;
+            }
+
+            return current;
+        }
+        
+        public TResult Execute(TCmd cmd)
             => TryCatchNext(cmd);
     }
 }

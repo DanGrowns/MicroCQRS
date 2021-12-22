@@ -22,7 +22,7 @@ namespace TinyCqrs.XUnitTests.Implementation
     [ExcludeFromCodeCoverage]
     public class CmdHandler1 : ICmdHandler<Cmd>
     {
-        public ICmdResult Execute(Cmd cmd)
+        public CmdResult Execute(Cmd cmd)
         {
             return new CmdResult();
         }
@@ -40,9 +40,9 @@ namespace TinyCqrs.XUnitTests.Implementation
     [ExcludeFromCodeCoverage]
     public class CmdHandlerAsync1 : ICmdHandlerAsync<Cmd>
     {
-        public Task<ICmdResult> Execute(Cmd cmd)
+        public Task<CmdResult> Execute(Cmd cmd)
         {
-            return Task.FromResult((ICmdResult) new CmdResult());
+            return Task.FromResult(new CmdResult());
         }
     }
 
