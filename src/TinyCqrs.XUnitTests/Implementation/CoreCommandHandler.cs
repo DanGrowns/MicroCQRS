@@ -27,10 +27,10 @@ namespace TinyCqrs.XUnitTests.Implementation
     }
     
     [CqrsDecoratedBy(typeof(DecoratorHandlerAsync))]
-    public class CoreCommandHandlerAsync : TryCatchHandlerAsync<MockCoreCommand>
+    public class CoreCommandHandlerAsync : TryCatchHandlerAsync<MockCoreCommand>, ICmdHandlerAsync<MockCoreCommand>
     {
-        protected override ICmdResult CmdResult { get; set; } = new CmdResult("Core command handler async");
-        
+        public CoreCommandHandlerAsync() => CmdResult = new CmdResult("Core command handler async");
+
         protected override Task ExecuteBody(MockCoreCommand cmd)
         {
             if (cmd.ThrowError)

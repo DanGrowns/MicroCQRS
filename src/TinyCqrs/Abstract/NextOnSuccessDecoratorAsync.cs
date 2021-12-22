@@ -7,11 +7,43 @@ using TinyCqrs.Interfaces;
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class NextOnSuccessDecoratorAsync<TCmd> : 
-        NextOnSuccessDecoratorAsync<TCmd, CmdResult>
+    public abstract class NextOnSuccessDecoratorAsync<TCmd> 
     {
-        protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd, CmdResult> next) 
-            : base(next) { }
+        private ICmdHandlerAsync<TCmd> Next { get; }
+        protected ICmdResult CmdResult { get; set; }
+
+        protected NextOnSuccessDecoratorAsync(ICmdHandlerAsync<TCmd> next)
+            => Next = next;
+
+        protected abstract Task ExecuteBody(TCmd cmd);
+        
+        private async Task<ICmdResult> TryCatchNext(TCmd cmd)
+        {
+            var current = CmdResult ?? new CmdResult();
+            
+            try
+            {
+                await ExecuteBody(cmd);
+            }
+            catch (Exception ex)
+            {
+                current.AddIssue(ex.Message);
+            }
+            
+            if (current.Success)
+            {
+                if (Next == null) 
+                    return current;
+                
+                var nextResult = await Next.Execute(cmd);
+                return nextResult;
+            }
+
+            return current;
+        }
+        
+        public async Task<ICmdResult> Execute(TCmd cmd)
+            => await TryCatchNext(cmd);
     }
     
     [CqrsIgnore]
