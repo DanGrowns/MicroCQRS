@@ -6,14 +6,36 @@ using TinyCqrs.Interfaces;
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class TryCatchHandler<TCmd> : 
-        TryCatchHandler<TCmd, CmdResult> { }
+    public abstract class TryCatchHandler<TCmd>
+    {
+        protected ICmdResult CmdResult { get; set; }
+        protected abstract void ExecuteBody(TCmd cmd);
+
+        private ICmdResult TryCatchNext(TCmd cmd)
+        {
+            var current = CmdResult ?? new CmdResult();
+            
+            try
+            {
+                ExecuteBody(cmd);
+            }
+            catch (Exception ex)
+            {
+                current.AddIssue(ex.Message);
+            }
+
+            return current;
+        }
+        
+        public ICmdResult Execute(TCmd cmd)
+            => TryCatchNext(cmd);
+    }
     
     [CqrsIgnore]
     public abstract class TryCatchHandler<TCmd, TResult> : ICmdHandler<TCmd, TResult>
         where TResult : ICmdResult, new()
     {
-        protected abstract TResult CmdResult { get; set; }
+        protected TResult CmdResult { get; set; }
         protected abstract void ExecuteBody(TCmd cmd);
 
         private TResult TryCatchNext(TCmd cmd)
