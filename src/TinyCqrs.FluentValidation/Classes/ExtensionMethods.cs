@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 
 namespace TinyCqrs.FluentValidation.Classes
@@ -20,8 +21,8 @@ namespace TinyCqrs.FluentValidation.Classes
 
             return current;
         }
-        
-        public static async Task<ICmdResult> ThisOrNext<TCmd>(this Task<ValidationResult> validationTask, TCmd cmd, ICmdHandlerAsync<TCmd> next)
+
+        public static async Task<ValidationCmdResult> ThisOrNext<TCmd>(this Task<ValidationResult> validationTask, TCmd cmd, ICmdHandlerAsync<TCmd, ValidationCmdResult> next)
         {
             var validationResult = await validationTask;
             var current = new ValidationCmdResult(validationResult);

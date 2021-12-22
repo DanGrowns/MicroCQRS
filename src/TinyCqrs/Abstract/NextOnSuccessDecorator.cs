@@ -6,16 +6,16 @@ using TinyCqrs.Interfaces;
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class NextOnSuccessDecorator<TCmd> 
+    public abstract class NextOnSuccessDecorator<TCmd> : ICmdHandler<TCmd>
     {
         private ICmdHandler<TCmd> Next { get; }
-        protected ICmdResult CmdResult { get; set; }
+        protected CmdResult CmdResult { get; set; }
 
         protected NextOnSuccessDecorator(ICmdHandler<TCmd> next) => Next = next;
 
         protected abstract void ExecuteBody(TCmd cmd);
         
-        private ICmdResult TryCatchNext(TCmd cmd)
+        private CmdResult TryCatchNext(TCmd cmd)
         {
             var current = CmdResult ?? new CmdResult();
             
@@ -40,7 +40,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public ICmdResult Execute(TCmd cmd)
+        public CmdResult Execute(TCmd cmd)
             => TryCatchNext(cmd);
     }
     

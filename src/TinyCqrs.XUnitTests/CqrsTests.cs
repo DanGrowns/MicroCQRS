@@ -17,7 +17,7 @@ namespace TinyCqrs.XUnitTests
 {
     public class CqrsTests
     {
-        private static int CountHandlers => 14;
+        private static int CountHandlers => 12;
 
         [Fact]
         public void CmdResult_AddError_Ok()
@@ -155,34 +155,6 @@ namespace TinyCqrs.XUnitTests
             var service = provider.GetService(serviceType);
 
             service.GetType().Should().Be(expectedType);
-        }
-
-        [Theory]
-        [InlineData("", false)]
-        [InlineData(null, false)]
-        [InlineData("Some data", true)]
-        public void ThisOrNext_Ok(string testData, bool isSuccessful)
-        {
-            var data = new ThisOrNextData {Test = testData};
-            var handler = new ThisOrNextHandler();
-            var decorator = new ThisOrNextValidator(handler);
-
-            var result = decorator.Execute(data);
-            result.Success.Should().Be(isSuccessful);
-        }
-        
-        [Theory]
-        [InlineData("", false)]
-        [InlineData(null, false)]
-        [InlineData("Some data", true)]
-        public async Task ThisOrNextAsync_Ok(string testData, bool isSuccessful)
-        {
-            var data = new ThisOrNextData {Test = testData};
-            var handler = new ThisOrNextHandlerAsync();
-            var decorator = new ThisOrNextValidatorAsync(handler);
-
-            var result = await decorator.Execute(data);
-            result.Success.Should().Be(isSuccessful);
         }
 
         [Theory]

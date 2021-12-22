@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCqrs", "TinyCqrs\TinyCq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCqrs.XUnitTests", "TinyCqrs.XUnitTests\TinyCqrs.XUnitTests.csproj", "{717AF93F-0BE5-4076-947D-BF39466E7E61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCqrs.FluentValidation", "TinyCqrs.FluentValidation\TinyCqrs.FluentValidation.csproj", "{DF48BD8D-4138-4047-801F-01CF2752971E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{717AF93F-0BE5-4076-947D-BF39466E7E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{717AF93F-0BE5-4076-947D-BF39466E7E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{717AF93F-0BE5-4076-947D-BF39466E7E61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF48BD8D-4138-4047-801F-01CF2752971E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF48BD8D-4138-4047-801F-01CF2752971E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF48BD8D-4138-4047-801F-01CF2752971E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF48BD8D-4138-4047-801F-01CF2752971E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

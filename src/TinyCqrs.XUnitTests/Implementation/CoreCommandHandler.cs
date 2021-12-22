@@ -20,7 +20,7 @@ namespace TinyCqrs.XUnitTests.Implementation
     [CqrsDecoratedBy(typeof(DecoratorHandler))]
     public class CoreCommandHandler : ICmdHandler<MockCoreCommand>
     {
-        public ICmdResult Execute(MockCoreCommand cmd)
+        public CmdResult Execute(MockCoreCommand cmd)
         {
             return new CmdResult("Core command handler");
         }

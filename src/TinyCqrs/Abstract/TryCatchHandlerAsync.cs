@@ -4,15 +4,16 @@ using TinyCqrs.Attributes;
 using TinyCqrs.Classes;
 using TinyCqrs.Interfaces;
 
+// TODO: Code sharing.
 namespace TinyCqrs.Abstract
 {
     [CqrsIgnore]
-    public abstract class TryCatchHandlerAsync<TCmd>
+    public abstract class TryCatchHandlerAsync<TCmd> : ICmdHandlerAsync<TCmd>
     {
-        protected ICmdResult CmdResult { get; set; }
+        protected CmdResult CmdResult { get; set; }
         protected abstract Task ExecuteBody(TCmd cmd);
 
-        private async Task<ICmdResult> TryCatchNext(TCmd cmd)
+        private async Task<CmdResult> TryCatchNext(TCmd cmd)
         {
             var current = CmdResult ?? new CmdResult();
             
@@ -28,7 +29,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public async Task<ICmdResult> Execute(TCmd cmd)
+        public async Task<CmdResult> Execute(TCmd cmd)
             => await TryCatchNext(cmd);
     }
     
