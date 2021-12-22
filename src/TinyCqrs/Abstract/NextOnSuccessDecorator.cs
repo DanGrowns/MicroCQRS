@@ -9,8 +9,9 @@ namespace TinyCqrs.Abstract
     public abstract class NextOnSuccessDecorator<TCmd> : 
         NextOnSuccessDecorator<TCmd, CmdResult>
     {
-        protected NextOnSuccessDecorator(ICmdHandler<TCmd, CmdResult> next) 
-            : base(next) { }
+        protected NextOnSuccessDecorator(ICmdHandler<TCmd, CmdResult> next) : base(next)
+        {
+        }
     }
     
     [CqrsIgnore]
