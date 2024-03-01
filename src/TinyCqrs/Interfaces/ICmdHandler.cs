@@ -4,12 +4,11 @@ namespace TinyCqrs.Interfaces
 {
     public interface ICmdHandler<in TCmd>
     {
-        CmdResult Execute(TCmd cmd);
+        ICmdResult<object> Execute(TCmd cmd);
     }
     
-    public interface ICmdHandler<in TCmd, out TCmdResult>
-        where TCmdResult : ICmdResult
+    public interface ICmdHandler<in TCmd, TOutput>
     {
-        TCmdResult Execute(TCmd cmd);
+        ICmdResult<TOutput> Execute(TCmd cmd);
     }
 }

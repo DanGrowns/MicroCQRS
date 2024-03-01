@@ -1,15 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>9</LangVersion>
+        <LangVersion>11</LangVersion>
         <Version>2.0.2</Version>
         <Authors>Dan Growns</Authors>
         <PackageId>TinyCqrs</PackageId>
         <PackageLicenseFile>Licence.txt</PackageLicenseFile>
-        <PackageVersion>3.0.0</PackageVersion>
-        <TargetFramework>net5.0</TargetFramework>
+        <PackageVersion>4.0.0</PackageVersion>
+        <TargetFramework>net8.0</TargetFramework>
         <PackageProjectUrl>https://github.com/DanGrowns/TinyCqrs</PackageProjectUrl>
-        <PackageReleaseNotes>3.0.0
+        <PackageReleaseNotes>
+4.0.0
+- Breaking change: ICmdResult takes in a type parameter for the result type
+- Breaking change: Minimum support level for .NET 8.0
+- Breaking change: Removed SourceName, replaced with Type
+- Breaking change: Removed SourceName from CmdIssue
+            
+3.0.0
 - Breaking change: Removed support for TinyCqrs.FluentValidation which is now legacy and works only with v2 or lower
 - Breaking change: CmdHandler execute return type changed to CmdResult from ICmdResult
 - Updated abstract handlers to allow for custom return type
@@ -28,13 +35,13 @@
 - Command handler interfaces now also support custom return type where the return type is based on ICmdResult
 - Extension method HandlerPipelineEquals() added to express unit test expectation for decorator pipeline in a more succinct manner.
 - Handler registrar updated to allow multiple handler contracts on a single concrete class</PackageReleaseNotes>
-        <AssemblyVersion>3.0.0.0</AssemblyVersion>
-        <FileVersion>3.0.0.0</FileVersion>
+        <AssemblyVersion>4.0.0.0</AssemblyVersion>
+        <FileVersion>4.0.0.0</FileVersion>
         <Description>A small CQRS Library based on the CQRS In Practice course by Vladimir Khorikov. Some of the code in this library was extended directly from Vladimir's examples in the course.</Description>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
       <None Include="Licence.txt" Pack="true" PackagePath="Licence.txt" />
     </ItemGroup>
 

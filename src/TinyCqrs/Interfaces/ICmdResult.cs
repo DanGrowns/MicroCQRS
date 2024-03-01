@@ -4,9 +4,10 @@ using TinyCqrs.Enums;
 
 namespace TinyCqrs.Interfaces
 {
-    public interface ICmdResult
+    public interface ICmdResult<TOutput>
     {
-        string SourceName { get; }
+        string Type { get; }
+        TOutput Output { get; set; }
         bool Success { get; }
         List<CmdIssue> Issues { get; }
         void AddIssue(string issueMessage, IssueType type = IssueType.Error);
