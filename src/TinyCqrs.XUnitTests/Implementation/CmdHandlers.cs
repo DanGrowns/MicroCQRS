@@ -11,9 +11,10 @@ namespace TinyCqrs.XUnitTests.Implementation
     public class Cmd {}
 
     [ExcludeFromCodeCoverage]
-    public class CustomResult : ICmdResult
+    public class CustomResult : ICmdResult<object>
     {
-        public string SourceName { get; }
+        public string Type { get; }
+        public object Output { get; set; }
         public bool Success { get; }
         public List<CmdIssue> Issues { get; }
         public void AddIssue(string issueMessage, IssueType type = IssueType.Error) { }
@@ -22,36 +23,38 @@ namespace TinyCqrs.XUnitTests.Implementation
     [ExcludeFromCodeCoverage]
     public class CmdHandler1 : ICmdHandler<Cmd>
     {
-        public CmdResult Execute(Cmd cmd)
+        public ICmdResult<object> Execute(Cmd cmd)
         {
-            return new CmdResult();
+            return new CmdResult<object>();
         }
     }
 
     [ExcludeFromCodeCoverage]
     public class CmdHandler2 : ICmdHandler<Cmd, CustomResult>
     {
-        public CustomResult Execute(Cmd cmd)
+        public ICmdResult<CustomResult> Execute(Cmd cmd)
         {
-            return new CustomResult();
+            return new CmdResult<CustomResult>();
         }
     }
 
     [ExcludeFromCodeCoverage]
     public class CmdHandlerAsync1 : ICmdHandlerAsync<Cmd>
     {
-        public Task<CmdResult> Execute(Cmd cmd)
+        public Task<ICmdResult<object>> Execute(Cmd cmd)
         {
-            return Task.FromResult(new CmdResult());
+            return Task.FromResult(
+                (ICmdResult<object>) new CmdResult<object>());
         }
     }
 
     [ExcludeFromCodeCoverage]
     public class CmdHandlerAsync2 : ICmdHandlerAsync<Cmd, CustomResult>
     {
-        public Task<CustomResult> Execute(Cmd cmd)
+        public Task<ICmdResult<CustomResult>> Execute(Cmd cmd)
         {
-            return Task.FromResult(new CustomResult());
+            return Task.FromResult(
+                (ICmdResult<CustomResult>) new CmdResult<CustomResult>());
         }
     }
 }

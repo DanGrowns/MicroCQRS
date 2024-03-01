@@ -8,12 +8,12 @@ namespace TinyCqrs.Abstract
     [CqrsIgnore]
     public abstract class TryCatchHandler<TCmd> : ICmdHandler<TCmd>
     {
-        protected CmdResult CmdResult { get; set; }
+        protected CmdResult<object> CmdResult { get; set; }
         protected abstract void ExecuteBody(TCmd cmd);
 
-        private CmdResult TryCatchNext(TCmd cmd)
+        private CmdResult<object> TryCatchNext(TCmd cmd)
         {
-            var current = CmdResult ?? new CmdResult();
+            var current = CmdResult ?? new CmdResult<object>();
             
             try
             {
@@ -27,20 +27,19 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public CmdResult Execute(TCmd cmd)
+        public ICmdResult<object> Execute(TCmd cmd)
             => TryCatchNext(cmd);
     }
     
     [CqrsIgnore]
-    public abstract class TryCatchHandler<TCmd, TResult> : ICmdHandler<TCmd, TResult>
-        where TResult : ICmdResult, new()
+    public abstract class TryCatchHandler<TCmd, TOutput> : ICmdHandler<TCmd, TOutput>
     {
-        protected TResult CmdResult { get; set; }
+        protected ICmdResult<TOutput> CmdResult { get; set; }
         protected abstract void ExecuteBody(TCmd cmd);
 
-        private TResult TryCatchNext(TCmd cmd)
+        private ICmdResult<TOutput> TryCatchNext(TCmd cmd)
         {
-            var current = CmdResult ?? new TResult();
+            var current = CmdResult ?? new CmdResult<TOutput>();
             
             try
             {
@@ -54,7 +53,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public TResult Execute(TCmd cmd)
+        public ICmdResult<TOutput> Execute(TCmd cmd)
             => TryCatchNext(cmd);
     }
 }

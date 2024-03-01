@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentValidation.Results;
 using TinyCqrs.Classes;
-using TinyCqrs.FluentValidation.Classes;
 using TinyCqrs.Interfaces;
 using TinyCqrs.XUnitTests.Implementation;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,39 +20,18 @@ namespace TinyCqrs.XUnitTests
         [Fact]
         public void CmdResult_AddError_Ok()
         {
-            const string source = "Source";
+            const string type = "Source";
             const string message = "New error message";
             
-            var basic = new CmdResult(source);
+            var basic = new CmdResult<object>(type);
             basic.AddIssue(message);
             basic.AddIssue("New warning message", IssueType.Warning);
 
-            basic.SourceName.Should().Be(source);
+            basic.Type.Should().Be(type);
             basic.Issues.Count.Should().Be(2);
-            basic.Issues[0].SourceName.Should().Be(source);
             basic.Issues[0].Message.Should().Be(message);
 
             basic.Success.Should().BeFalse();
-        }
-        
-        [Fact]
-        public void ValidationCmdResult_AddError_Ok()
-        {
-            const string source = "Validation";
-            const string validationError = "An error occured";
-            
-            var vcr = new ValidationCmdResult(new ValidationResult {Errors = { new ValidationFailure("Property", validationError)}});
-            vcr.AddIssue("New error message");
-            vcr.AddIssue("Warning message", IssueType.Warning);
-
-            vcr.SourceName.Should().Be(source);
-            vcr.Issues.Count.Should().Be(3);
-            vcr.Issues.Count(x => x.Type == IssueType.Warning).Should().Be(1);
-            
-            vcr.Issues[0].SourceName.Should().Be(source);
-            vcr.Issues[0].Message.Should().Be(validationError);
-
-            vcr.Success.Should().Be(false);
         }
 
         [Fact]
@@ -131,7 +108,7 @@ namespace TinyCqrs.XUnitTests
             parent.ChildHandler.Should().BeOfType<CoreCommandHandler>();
 
             var result = parent.Execute(new MockCoreCommand(false));
-            result.SourceName.Should().Be("Core command handler");
+            result.Type.Should().Be("Core command handler");
         }
         
         [Theory]

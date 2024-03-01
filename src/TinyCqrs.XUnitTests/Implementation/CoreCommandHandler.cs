@@ -20,16 +20,16 @@ namespace TinyCqrs.XUnitTests.Implementation
     [CqrsDecoratedBy(typeof(DecoratorHandler))]
     public class CoreCommandHandler : ICmdHandler<MockCoreCommand>
     {
-        public CmdResult Execute(MockCoreCommand cmd)
+        public ICmdResult<object> Execute(MockCoreCommand cmd)
         {
-            return new CmdResult("Core command handler");
+            return new CmdResult<object>("Core command handler");
         }
     }
     
     [CqrsDecoratedBy(typeof(DecoratorHandlerAsync))]
-    public class CoreCommandHandlerAsync : TryCatchHandlerAsync<MockCoreCommand>, ICmdHandlerAsync<MockCoreCommand>
+    public class CoreCommandHandlerAsync : TryCatchHandlerAsync<MockCoreCommand>
     {
-        public CoreCommandHandlerAsync() => CmdResult = new CmdResult("Core command handler async");
+        public CoreCommandHandlerAsync() => CmdResult = new CmdResult<object>("Core command handler async");
 
         protected override Task ExecuteBody(MockCoreCommand cmd)
         {

@@ -12,7 +12,7 @@ namespace TinyCqrs.XUnitTests.Implementation
     {
         public DecoratorHandler(ICmdHandler<MockCoreCommand> next) : base(next)
         {
-            CmdResult = new CmdResult("Decorator handler");
+            CmdResult = new CmdResult<object>("Decorator handler");
             ChildHandler = next;
         }
 
@@ -29,7 +29,7 @@ namespace TinyCqrs.XUnitTests.Implementation
     public class DecoratorHandlerAsync : NextOnSuccessDecoratorAsync<MockCoreCommand>
     {
         public DecoratorHandlerAsync(ICmdHandlerAsync<MockCoreCommand> next) : base(next)
-            => CmdResult = new CmdResult("Decorator Handler Async");
+            => CmdResult = new CmdResult<object>("Decorator Handler Async");
 
         protected override Task ExecuteBody(MockCoreCommand cmd)
         {

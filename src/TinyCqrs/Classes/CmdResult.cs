@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,26 +8,28 @@ using TinyCqrs.Interfaces;
 
 namespace TinyCqrs.Classes
 {
-    public class CmdResult : ICmdResult
+    public class CmdResult<TOutput> : ICmdResult<TOutput>
     {
         [ExcludeFromCodeCoverage]
         public CmdResult() => Issues = new List<CmdIssue>();
-        public CmdResult(string sourceName) : this() => SourceName = sourceName;
+        public CmdResult(string type) : this() => Type = type;
+        public CmdResult(Enum enumValue) : this() => Type = enumValue.ToString();
         
         [JsonConstructor]
-        public CmdResult(string sourceName, List<CmdIssue> issues) : this()
+        public CmdResult(string type, List<CmdIssue> issues) : this()
         {
-            SourceName = sourceName;
+            Type = type;
             Issues = issues;
         }
         
-        public string SourceName { get; }
+        public string Type { get; }
+        public TOutput Output { get; set; }
         public List<CmdIssue> Issues { get; }
         
         public bool Success 
             => Issues.Any(x => x.Type == IssueType.Error) == false;
         
         public void AddIssue(string issueMessage, IssueType type = IssueType.Error) 
-            => Issues.Add(new CmdIssue(SourceName, issueMessage, type));
+            => Issues.Add(new CmdIssue(issueMessage, type));
     }
 }

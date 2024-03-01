@@ -1,16 +1,14 @@
 using System.Threading.Tasks;
-using TinyCqrs.Classes;
 
 namespace TinyCqrs.Interfaces
 {
     public interface ICmdHandlerAsync<in TCmd>
     {
-        Task<CmdResult> Execute(TCmd cmd);
+        Task<ICmdResult<object>> Execute(TCmd cmd);
     }
     
-    public interface ICmdHandlerAsync<in TCmd, TCmdResult>
-        where TCmdResult : ICmdResult
+    public interface ICmdHandlerAsync<in TCmd, TOutput>
     {
-        Task<TCmdResult> Execute(TCmd cmd);
+        Task<ICmdResult<TOutput>> Execute(TCmd cmd);
     }
 }

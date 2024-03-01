@@ -10,12 +10,12 @@ namespace TinyCqrs.Abstract
     [CqrsIgnore]
     public abstract class TryCatchHandlerAsync<TCmd> : ICmdHandlerAsync<TCmd>
     {
-        protected CmdResult CmdResult { get; set; }
+        protected ICmdResult<object> CmdResult { get; set; }
         protected abstract Task ExecuteBody(TCmd cmd);
 
-        private async Task<CmdResult> TryCatchNext(TCmd cmd)
+        private async Task<ICmdResult<object>> TryCatchNext(TCmd cmd)
         {
-            var current = CmdResult ?? new CmdResult();
+            var current = CmdResult ?? new CmdResult<object>();
             
             try
             {
@@ -29,18 +29,17 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public async Task<CmdResult> Execute(TCmd cmd)
+        public async Task<ICmdResult<object>> Execute(TCmd cmd)
             => await TryCatchNext(cmd);
     }
     
     [CqrsIgnore]
-    public abstract class TryCatchHandlerAsync<TCmd, TResult> : ICmdHandlerAsync<TCmd, TResult>
-        where TResult : ICmdResult, new()
+    public abstract class TryCatchHandlerAsync<TCmd, TOutput> : ICmdHandlerAsync<TCmd, TOutput>
     {
-        protected TResult CmdResult { get; set; }
+        protected ICmdResult<TOutput> CmdResult { get; set; }
         protected abstract Task ExecuteBody(TCmd cmd);
 
-        private async Task<TResult> TryCatchNext(TCmd cmd)
+        private async Task<ICmdResult<TOutput>> TryCatchNext(TCmd cmd)
         {
             var current = CmdResult;
             
@@ -56,7 +55,7 @@ namespace TinyCqrs.Abstract
             return current;
         }
         
-        public async Task<TResult> Execute(TCmd cmd)
+        public async Task<ICmdResult<TOutput>> Execute(TCmd cmd)
             => await TryCatchNext(cmd);
     }
 }
